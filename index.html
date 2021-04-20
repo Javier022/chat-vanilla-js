@@ -16,9 +16,47 @@
       crossorigin="anonymous"
     />
 
-    <title>Hello, world!</title>
+    <title>Chat</title>
   </head>
   <body>
-    <h1>Hello, world!</h1>
+    <div class="container">
+      <nav class="navbar navbar-dark bg-dark">
+        <span class="navbar-brand" id="userName"></span>
+        <div id="buttons"></div>
+      </nav>
+      <main id="contentProtected" class="mt-5"></main>
+      <form id="form">
+        <input
+          type="text"
+          class="form-control"
+          placeholder="enviar mensaje"
+          id="inputChat"
+        />
+        <div class="input-group-append">
+          <button class="btn btn-primary" type="submit">Send</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Firebase App (the core Firebase SDK) is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/8.3.1/firebase-app.js"></script>
+    <!-- Add Firebase products that you want to use -->
+    <script src="https://www.gstatic.com/firebasejs/8.3.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.3.1/firebase-firestore.js"></script>
+
+    <script>
+      var firebaseConfig = {
+        apiKey: "AIzaSyDHLXntJYIZqn3s0NdGg-07yfIdSVask_o",
+        authDomain: "chat-js-f2e70.firebaseapp.com",
+        projectId: "chat-js-f2e70",
+        storageBucket: "chat-js-f2e70.appspot.com",
+        messagingSenderId: "367798332165",
+        appId: "1:367798332165:web:e269c420640c0043b3256c",
+      };
+      // Initialize Firebase
+      firebase.initializeApp(firebaseConfig);
+    </script>
+
+    <script src="src/index.js"></script>
   </body>
 </html>
