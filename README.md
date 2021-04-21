@@ -1,2 +1,2 @@
 # chat-vanilla-js
-chat with vanilla and firebase
+chat with vanilla javascript and firebase
