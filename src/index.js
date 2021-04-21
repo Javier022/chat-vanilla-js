@@ -18,19 +18,18 @@ firebase.auth().onAuthStateChanged((user) => {
   };
 
   if (user) {
-    // console.log(user);
+    // console.log("user", user);
     buttons.innerHTML = elementHtml("btn", "Sign Out", "signOut", "danger");
     userName.textContent = `${user.displayName}`;
-    contentProtected.innerHTML = elementHtml("p", "Estas en el chat");
-    form.classList = "input-group bg-dark py-3 fixed-bottom container";
-    contentForm(user);
+    form.classList = "input-group py-3 fixed-bottom container";
+    chatContent(user);
 
     logOut();
   } else {
     buttons.innerHTML = elementHtml("btn", "Sign In", "signIn", "success");
     userName.textContent = "Chat";
     contentProtected.innerHTML = elementHtml("p", "Debes iniciar sesión");
-    form.classList = "input-group bg-dark py-3 fixed-bottom container d-none";
+    form.classList = "input-group  py-3 fixed-bottom container d-none";
 
     logIn();
   }
@@ -75,18 +74,59 @@ const logOut = () => {
 
 /* Content Form */
 
-const contentForm = (user) => {
+const chatContent = (user) => {
+  const db = firebase.firestore();
+
+  messagesRealTime(db, user);
+
   form.addEventListener("submit", (e) => {
     e.preventDefault();
 
     if (!inputChat.value.trim()) {
-      // if remove white space to text and the text is void then well be false
-      // but the operator of negation will pass to true, entry in the if
-      // !false = true
-      console.log("input vacio");
-
+      // console.log("void input, validate input");
       return;
-      // outside function
     }
+
+    db.collection("chats")
+      .add({
+        text: inputChat.value,
+        uid: user.uid,
+        date: Date.now(),
+      })
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((error) => console.log(error));
+
+    inputChat.value = "";
   });
+};
+
+// messages
+const messagesRealTime = (db, user) => {
+  db.collection("chats")
+    .orderBy("date")
+    .onSnapshot((query) => {
+      contentProtected.innerHTML = "";
+
+      query.docs.map((doc) => {
+        console.log(doc.data());
+
+        const data = doc.data();
+        if (data.uid !== user.uid) {
+          // entry message
+          contentProtected.innerHTML += /*html*/ `<div class="d-flex justify-content-start my-2 ">
+            <span class="badge badge-pill badge-secondary">${data.text}</span>
+          </div>`;
+        } else {
+          // user messages
+          contentProtected.innerHTML += /*html*/ `<div class="d-flex justify-content-end my-2">
+          <span class="badge badge-pill badge-primary">${data.text}</span>
+        </div>
+      `;
+        }
+
+        contentProtected.scrollTop = contentProtected.scrollHeight;
+      });
+    });
 };
